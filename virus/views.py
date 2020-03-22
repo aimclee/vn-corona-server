@@ -6,8 +6,8 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from .models import Nhandan_Title
-from .serializers import NhandanSerializer
+from .models import Nhandan_Title, VnExpress
+from .serializers import NhandanSerializer, VnExpressSerializer
 # Create your views here.
 
 import requests
@@ -76,6 +76,60 @@ def news_title():
     return dic
 
 
+"""
+VN Express Crawling
+"""
+
+def vn_express ():
+
+    URL = 'https://timkiem.vnexpress.net/'
+    params = {
+        'q':'covid'
+    }
+
+    res = requests.get(URL, params=params)
+    data = res.text
+    soup = BeautifulSoup(data, 'html.parser')
+
+    # 뉴스 제목 10개
+
+
+    title = soup.select('.title_news a')
+
+    title_array = []
+    for t in title:
+        a = t.get('title')
+        title_array.append(a)
+
+    # 뉴스 제목에 대한 내용 10개 크롤링
+
+    contents = soup.select('.description')
+
+    contents_array = []
+    for content in contents:
+        b = content.get_text()
+        c = b.strip('\r\n')
+        d = c.strip()
+        contents_array.append(d)
+
+
+    # 뉴스 이미지 크롤링
+    image = soup.select('.thumb_art img')
+
+    image_array = []
+    for i in image:
+        img = i.get('src')
+        image_array.append(img)
+
+    dic = {}
+    for text in range(len(title_array)):
+        dic[title_array[text]] = [contents_array[text], image_array[text]]
+    return dic
+
+
+
+
+
 class NhandanViewSet(viewsets.ModelViewSet):
     blog_data_dict = news_title()
     for t, l in blog_data_dict.items():
@@ -83,3 +137,11 @@ class NhandanViewSet(viewsets.ModelViewSet):
 
     queryset = Nhandan_Title.objects.all()
     serializer_class = NhandanSerializer
+
+class VnExpressViewSet(viewsets.ModelViewSet):
+    blog_data_dict = vn_express()
+    for t, l in blog_data_dict.items():
+        VnExpress(news_title=t, summary=l[0], img=l[1]).save()
+
+    queryset = VnExpress.objects.all()
+    serializer_class = VnExpressSerializer

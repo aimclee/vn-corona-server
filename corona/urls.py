@@ -16,9 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from virus.views import NhandanViewSet
+from virus.views import NhandanViewSet, VnExpressViewSet
 router = routers.DefaultRouter()
-router.register('virus', NhandanViewSet)
+router.register('nhandan', NhandanViewSet)
+router.register('vnexpress', VnExpressViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),

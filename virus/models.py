@@ -10,3 +10,9 @@ class Nhandan_Title(models.Model):
     def __str__(self):
         return self.news_title
     
+class VnExpress (models.Model):
+    news_title = models.CharField(max_length=255)
+    summary = models.TextField()
+    img = models.URLField()
+    def __str__(self):
+        return self.news_title
