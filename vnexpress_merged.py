@@ -45,7 +45,7 @@ def vn_express ():
         image_array.append(img)
     print(len(image_array))
     dic = {}
-    for text in range(len(title_array)):
+    for text in range(len(image_array)):
         dic[title_array[text]] = [contents_array[text], image_array[text]]
     return dic
 
