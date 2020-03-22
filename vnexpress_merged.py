@@ -21,7 +21,7 @@ def vn_express ():
     for t in title:
         a = t.get('title')
         title_array.append(a)
-
+    print(len(title_array))
     # 뉴스 제목에 대한 내용 10개 크롤링
 
     contents = soup.select('.description')
@@ -32,7 +32,7 @@ def vn_express ():
         c = b.strip('\r\n')
         d = c.strip()
         contents_array.append(d)
-
+    print(len(contents_array))
 
 
     # 뉴스 이미지 크롤링
@@ -43,7 +43,7 @@ def vn_express ():
     for i in image:
         img = i.get('src')
         image_array.append(img)
-
+    print(len(image_array))
     dic = {}
     for text in range(len(title_array)):
         dic[title_array[text]] = [contents_array[text], image_array[text]]

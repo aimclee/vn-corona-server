@@ -80,7 +80,7 @@ def news_title():
 VN Express Crawling
 """
 
-def vn_express ():
+def vn_express():
 
     URL = 'https://timkiem.vnexpress.net/'
     params = {
