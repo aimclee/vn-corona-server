@@ -1,18 +1,5 @@
-from django.shortcuts import render
-
-# Create your views here.
-import django
 import requests
 from bs4 import BeautifulSoup
-from virus.models import Nhandan_Title
-from rest_framework import viewsets
-from .models import Nhandan_Title, VnExpress
-from .serializers import NhandanSerializer, VnExpressSerializer
-import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "../corona.settings")
-
-django.setup()
-
 
 def news_title():
     URL = 'https://nhandan.com.vn/tim-kiem'
@@ -138,22 +125,6 @@ def vn_express():
         dic[title_array[text]] = [contents_array[text],link_array[text], image_array[text]]
     return dic
 
+a = news_title()
 
-
-
-
-class NhandanViewSet(viewsets.ModelViewSet):
-    blog_data_dict = news_title()
-    for t, l in blog_data_dict.items():
-        Nhandan_Title(news_title=t,page_link=l[1], summary=l[0], img=l[2]).save()
-
-    queryset = Nhandan_Title.objects.all()
-    serializer_class = NhandanSerializer
-
-class VnExpressViewSet(viewsets.ModelViewSet):
-    blog_data_dict = vn_express()
-    for t, l in blog_data_dict.items():
-        VnExpress(news_title=t,page_link=l[1], summary=l[0], img=l[2]).save()
-
-    queryset = VnExpress.objects.all()
-    serializer_class = VnExpressSerializer
+print(a)
