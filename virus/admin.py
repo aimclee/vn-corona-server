@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Nhandan_Title, VnExpress
+from .models import Nhandan_Title, VnExpress, Moh_Tracker, Moh_Number
 # Register your models here.
 admin.site.register(Nhandan_Title)
 admin.site.register(VnExpress)
+admin.site.register(Moh_Tracker)
+admin.site.register(Moh_Number)
