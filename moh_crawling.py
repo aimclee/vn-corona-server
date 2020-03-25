@@ -54,3 +54,6 @@ def moh_crawling():
         dic[key_answer[text]] = value_answer[text]
     return dic
 
+a = moh_crawling()
+
+print(a)

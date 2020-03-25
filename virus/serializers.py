@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Nhandan_Title, VnExpress, Moh_Number, Moh_Tracker
+from .models import Nhandan_Title, VnExpress, Moh_Tracker, WorldMeter
 
 
 class NhandanSerializer(serializers.ModelSerializer):
@@ -14,12 +14,14 @@ class VnExpressSerializer(serializers.ModelSerializer):
         fields = ('news_title', 'page_link' ,'summary', 'img',)
 
 
-class Moh_NumberSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Moh_Number
-        fields = ('moh_number',)
 
 class Moh_TrackerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Moh_Tracker
         fields = ('location','tracker',)
+
+
+class WorldMeterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorldMeter
+        fields = ('total_infected','total_death', 'total_recovery','new_infected',)

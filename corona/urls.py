@@ -16,12 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from virus.views import NhandanViewSet, VnExpressViewSet, Moh_NumberViewSet, Moh_TrackerViewSet
+from virus.views import NhandanViewSet, VnExpressViewSet,  Moh_TrackerViewSet, WorldMeterViewSet
 router = routers.DefaultRouter()
 router.register('nhandan', NhandanViewSet)
 router.register('vnexpress', VnExpressViewSet)
-router.register('moh_number', Moh_NumberViewSet)
 router.register('moh_tracker', Moh_TrackerViewSet)
+router.register('worldmeter', WorldMeterViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),

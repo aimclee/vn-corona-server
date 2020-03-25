@@ -5,8 +5,8 @@ import django
 import requests
 from bs4 import BeautifulSoup
 from rest_framework import viewsets
-from .models import Nhandan_Title, VnExpress, Moh_Tracker, Moh_Number
-from .serializers import NhandanSerializer, VnExpressSerializer, Moh_NumberSerializer, Moh_TrackerSerializer
+from .models import Nhandan_Title, VnExpress, Moh_Tracker, WorldMeter
+from .serializers import NhandanSerializer, VnExpressSerializer, Moh_TrackerSerializer, WorldMeterSerializer
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "../corona.settings")
 
@@ -140,14 +140,14 @@ def vn_express():
 """
 Moh
 """
-def moh_number ():
-    url = "https://ncov.moh.gov.vn/" # 감염된 사례 수, 내용들 크롤링 해오기
-    response = requests.get(url, verify=False)
-    data = response.text
-    soup = BeautifulSoup(data, 'html.parser')
+# def moh_number ():
+#     url = "https://ncov.moh.gov.vn/" # 감염된 사례 수, 내용들 크롤링 해오기
+#     response = requests.get(url, verify=False)
+#     data = response.text
+#     soup = BeautifulSoup(data, 'html.parser')
 
-    infected_num = soup.select_one('.font24').text
-    return infected_num
+#     infected_num = soup.select_one('.font24').text
+#     return infected_num
 def moh_crawling():
     url = "https://ncov.moh.gov.vn/" # 감염된 사례 수, 내용들 크롤링 해오기
     response = requests.get(url, verify=False)
@@ -193,6 +193,52 @@ def moh_crawling():
     return dic
 
 
+"""
+베트남 총 감염자 수, 사망자 수, 회복자 수, 신규 감염자 수
+"""
+
+
+def coronaParsing():
+
+    url = 'https://www.worldometers.info/coronavirus/'
+    response = requests.get(url)
+    data = response.text
+    soup = BeautifulSoup(data, 'html.parser')
+    url_corona = soup.find_all('div', {'class': 'maincounter-number'})
+
+    ###
+    title = []  # title[0], title[1], title[2] -> world confirmed case
+
+    # world confirmed Case
+    # for text in range(len(url_corona)):
+    #     title.append(url_corona[text].find('span').text)
+
+    # vietnam corona case
+    viet = []
+    chart = soup.find('table', attrs={'id': "main_table_countries_today"})
+    chart_body = chart.find('tbody')
+    rows = chart_body.find_all('tr')
+
+    for row in rows:
+        cols = row.find_all('td')
+        cols = [ele.text for ele in cols]
+        viet.append([ele for ele in cols if ele])
+
+    for vietnam in viet:
+        if vietnam[0] == 'Vietnam':
+            title.append(vietnam[vietnam.index('Vietnam') + 1])  # 전체 감염자 수
+            if vietnam[vietnam.index('Vietnam') + 2] == ' ':
+                title.append('0')
+            else:
+                title.append(vietnam[vietnam.index('Vietnam') + 2])   # 사망자 수
+            title.append(vietnam[vietnam.index('Vietnam') + 3])  # 회복자 수
+            title.append(vietnam[vietnam.index('Vietnam') + 4])  # 신규 감염자수
+
+
+    return title
+
+
+
 
 
 class NhandanViewSet(viewsets.ModelViewSet):
@@ -212,14 +258,6 @@ class VnExpressViewSet(viewsets.ModelViewSet):
     serializer_class = VnExpressSerializer
 
 
-class Moh_NumberViewSet(viewsets.ModelViewSet):
-    blog_data_dict = moh_number()
-    Moh_Number(moh_number=blog_data_dict).save()
-
-    queryset = Moh_Number.objects.all()
-    serializer_class = Moh_NumberSerializer
-
-
 class Moh_TrackerViewSet(viewsets.ModelViewSet):
     blog_data_dict = moh_crawling()
     for t,l in blog_data_dict.items():
@@ -227,3 +265,11 @@ class Moh_TrackerViewSet(viewsets.ModelViewSet):
 
     queryset = Moh_Tracker.objects.all()
     serializer_class = Moh_TrackerSerializer
+
+
+class WorldMeterViewSet(viewsets.ModelViewSet):
+    blog_data_dict = coronaParsing()
+    WorldMeter(total_infected = blog_data_dict[0], total_death= blog_data_dict[1], total_recovery= blog_data_dict[2], new_infected= blog_data_dict[3]).save()
+
+    queryset = WorldMeter.objects.all()
+    serializer_class = WorldMeterSerializer
