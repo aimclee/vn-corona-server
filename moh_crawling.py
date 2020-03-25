@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-
+from bs4 import BeautifulSoup
 
 def moh_number ():
     url = "https://ncov.moh.gov.vn/" # 감염된 사례 수, 내용들 크롤링 해오기

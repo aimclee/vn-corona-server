@@ -244,8 +244,7 @@ def coronaParsing():
 class NhandanViewSet(viewsets.ModelViewSet):
     blog_data_dict = news_title()
     for t, l in blog_data_dict.items():
-        Nhandan_Title(news_title=t,page_link=l[1], summary=l[0], img=l[2]).save()
-
+        Nhandan_Title(news_title=t,page_link=l[1], summary=l[0], img=l[2]).save()      
     queryset = Nhandan_Title.objects.all()
     serializer_class = NhandanSerializer
 
